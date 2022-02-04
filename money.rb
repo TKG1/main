@@ -7,4 +7,4 @@ YEN.reverse.map{ |yen|
   payment = payment % yen
 }
 
-p Hash[*[YEN, required_yen].transpose.flatten]
+p [YEN, required_yen].transpose.to_h
