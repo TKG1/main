@@ -1,9 +1,15 @@
-payment = ARGV[0].to_i.abs
-YEN = [ 1, 5, 10, 50, 100, 500, 1000, 5000, 10000 ]
+begin
+  payment = ARGV[0].to_i
+  raise if payment.negative?
+rescue
+  puts 'erorr: 引数には正の数を入力してください'
+  exit
+end
+YEN = [10000, 5000, 1000, 500, 100, 50, 10, 5, 1]
 required_yen = []
 
-YEN.reverse.map{ |yen|
-  required_yen.prepend(payment / yen)
+YEN.each{ |yen|
+  required_yen.push(payment / yen)
   payment = payment % yen
 }
 
