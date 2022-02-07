@@ -3,24 +3,24 @@ arg = ARGV.take(5)
 # 引数を文字列に変換
 tehuda = arg.join(',')
 # 手札の数字のみ抽出、昇順に並べ替え
-string_number = tehuda.delete('^0-9,').split(',')
-number = string_number.map(&:to_i).sort
+number = tehuda.delete('^0-9,').split(',')
+number = number.map(&:to_i).sort
 
 # 手札のマークの一文字目のみを抽出、昇順に並べ替え
 mark = tehuda.delete('0-9').split(',').sort
-mark = mark.map { |m| m[0] }
+mark = mark.map { |ma| ma[0] }
 
 # トランプのマーク・番号以外が入力されると例外
 begin
   raise unless arg.length == 5
 rescue
   p 'error: 引数は5個入力してください'
-    exit
+  exit
 end
 
 number.map do |num|
   begin
-    raise unless num.between?(1,13)
+    raise unless num.between?(1, 13)
   rescue
     p 'error: 1~13の数値を入力してください'
     exit
@@ -54,11 +54,13 @@ two_pair = false
 one_pair = false
 
 # 同じ番号を集計
-number.uniq.map { |num| aggregated_number.push(number.count(num)) }
+aggregated_number = number.uniq.map { |num| number.count(num) }
 # 同じマークを集計
-mark.uniq.map { |ma| aggregated_mark.push(mark.count(ma)) }
+aggregated_mark = mark.uniq.map { |ma| mark.count(ma) }
 # 連番の判定
-(number.length - 1).times { |i| straighted_number += 1 if number[i] == (number[i + 1] - 1) }
+(number.length - 1).times do |i|
+  straighted_number += 1 if number[i] == (number[i + 1] - 1) || number[i] == (number[i + 1] - 9)
+end
 
 # 数の役判定
 case aggregated_number.sort
@@ -77,12 +79,9 @@ end
 # ストレート判定
 straight = true if straighted_number == 4
 # フラッシュ判定
-flash = true if aggregated_mark == [5]
+flash = true if aggregated_mark.length == 1
 # ロイヤルストレート・フラッシュ判定
-if number == [1, 10, 11, 12, 13]
-  straight = true
-  royal_straight_flash = true if flash
-end
+royal_straight_flash = true if number == [1, 10, 11, 12, 13] && flash
 
 # 結果の出力
 if royal_straight_flash
